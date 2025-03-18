@@ -22,10 +22,10 @@ interface ProductImage {
 
 export default function CreateProduct() {
     const [images, setImages] = useState<ProductImage[]>([
-        { id: 1, url: "/placeholder.svg?height=200&width=200" },
-        { id: 2, url: "/placeholder.svg?height=200&width=200" },
-        { id: 3, url: "/placeholder.svg?height=200&width=200" },
-        { id: 4, url: "/placeholder.svg?height=200&width=200" },
+        { id: 1, url: "/assets/images/galary/galary-1.avif" },
+        { id: 2, url: "/assets/images/galary/galary-1.avif" },
+        { id: 3, url: "/assets/images/galary/galary-1.avif" },
+        { id: 4, url: "/assets/images/galary/galary-1.avif" },
     ])
 
     const [tags, setTags] = useState(["trend"])
