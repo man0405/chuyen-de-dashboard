@@ -53,7 +53,7 @@ export default function ProductsList() {
             quantity: 46,
             sales: 387,
             maxSales: 1000,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-1.avif",
         },
         {
             id: "098359NT",
@@ -62,7 +62,7 @@ export default function ProductsList() {
             quantity: 28,
             sales: 892,
             maxSales: 1000,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-3.avif",
         },
         {
             id: "098383NT",
@@ -71,7 +71,7 @@ export default function ProductsList() {
             quantity: 52,
             sales: 1145,
             maxSales: 1500,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-3.avif",
         },
         {
             id: "098342NT",
@@ -80,7 +80,7 @@ export default function ProductsList() {
             quantity: 92,
             sales: 651,
             maxSales: 1000,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-2.avif",
         },
         {
             id: "09837INT",
@@ -89,7 +89,7 @@ export default function ProductsList() {
             quantity: 119,
             sales: 234,
             maxSales: 1000,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-3.avif",
         },
         {
             id: "098314NT",
@@ -98,7 +98,7 @@ export default function ProductsList() {
             quantity: 18,
             sales: 1201,
             maxSales: 1500,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-3.avif",
         },
         {
             id: "098336NT",
@@ -107,7 +107,7 @@ export default function ProductsList() {
             quantity: 7,
             sales: 49,
             maxSales: 100,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-2.avif",
         },
         {
             id: "098368NT",
@@ -116,7 +116,7 @@ export default function ProductsList() {
             quantity: 30,
             sales: 978,
             maxSales: 1200,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-2.avif",
         },
         {
             id: "098392NT",
@@ -125,7 +125,7 @@ export default function ProductsList() {
             quantity: 27,
             sales: 573,
             maxSales: 800,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-2.avif",
         },
         {
             id: "098355NT",
@@ -134,7 +134,7 @@ export default function ProductsList() {
             quantity: 6,
             sales: 1322,
             maxSales: 1500,
-            image: "/placeholder.svg?height=60&width=60",
+            image: "/assets/images/galary/galary-2.avif",
         },
     ])
 
@@ -182,7 +182,7 @@ export default function ProductsList() {
                             <Bell className="h-5 w-5" />
                         </Button>
                         <Avatar>
-                            <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
+                            <AvatarImage src="/assets/images/agents/agent-2.png" alt="User" />
                             <AvatarFallback>U</AvatarFallback>
                         </Avatar>
                     </div>

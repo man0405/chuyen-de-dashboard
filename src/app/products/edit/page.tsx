@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowLeft, Bold, Code, Heading, Italic, List, ListOrdered, Minus, Quote, Trash } from "lucide-react"
+import { ArrowLeft, Bold, Code, Heading, ImageIcon, Italic, List, ListOrdered, Minus, Quote, Trash, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,8 +15,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+interface ProductImage {
+    id: number
+    url: string
+}
 export default function EditProduct() {
-    const [tags] = useState(["trend"])
+    const [images, setImages] = useState<ProductImage[]>([
+        { id: 1, url: "/assets/images/galary/galary-1.avif" },
+        { id: 2, url: "/assets/images/galary/galary-1.avif" },
+        { id: 3, url: "/assets/images/galary/galary-1.avif" },
+        { id: 4, url: "/assets/images/galary/galary-1.avif" },
+    ])
+
+    const [tags, setTags] = useState(["trend"])
+
+    const removeImage = (id: number) => {
+        setImages(images.filter((img) => img.id !== id))
+    }
+
+    const removeTag = (tagToRemove: string) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove))
+    }
+
 
     return (
         <div className="flex min-h-screen bg-background">
@@ -185,46 +206,54 @@ whizz air one dirty linen chav not some sort of dosshouse."
                         </div>
 
                         {/* Right Column */}
-                        <div className="space-y-6">
+                        <div className="flex  space-y-6 ">
                             {/* Product Image */}
                             <Card>
                                 <CardContent className="p-6">
-                                    <h2 className="text-lg font-semibold mb-4">Product Image</h2>
-                                    <p className="text-sm text-muted-foreground mb-4">
-                                        Choose a product photo or simply drag and drop up to 5 photos here.
-                                    </p>
-                                    <div className="grid grid-cols-2 gap-4 mb-4">
-                                        <ImageThumbnail src="/placeholder.svg?height=120&width=120" />
-                                        <ImageThumbnail src="/placeholder.svg?height=120&width=120" />
-                                        <ImageThumbnail src="/placeholder.svg?height=120&width=120" />
-                                        <ImageThumbnail src="/placeholder.svg?height=120&width=120" />
-                                        <div className="relative aspect-square rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-4 text-center">
-                                            <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-2">
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path
-                                                        d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H12"
-                                                        stroke="currentColor"
-                                                        strokeWidth="2"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-                                                    <path
-                                                        d="M8 12L12 16L22 6"
-                                                        stroke="currentColor"
-                                                        strokeWidth="2"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                    />
-                                                </svg>
+                                    <div className="space-y-4">
+                                        <h2 className="text-lg font-semibold mb-4">Product Image</h2>
+                                        <p className="text-sm text-muted-foreground mb-4">
+                                            Choose a product photo or simply drag and drop up to 5 photos here.
+                                        </p>
+                                        <ScrollArea className="h-[400px] rounded-lg border bg-muted/40 p-4">
+                                            <div className="grid grid-cols-2 gap-4">
+                                                {images.map((image) => (
+                                                    <div
+                                                        key={image.id}
+                                                        className="group relative aspect-square rounded-lg border bg-background"
+                                                    >
+                                                        <Image
+                                                            src={image.url || "/placeholder.svg"}
+                                                            alt="Product image"
+                                                            fill
+                                                            className="rounded-lg object-cover"
+                                                        />
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="absolute right-2 top-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 backdrop-blur-sm"
+                                                            onClick={() => removeImage(image.id)}
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                                <label className="relative aspect-square rounded-lg border-2 border-dashed hover:border-primary/50 cursor-pointer">
+                                                    <input type="file" className="sr-only" accept="image/*" multiple />
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
+                                                        <ImageIcon className="h-8 w-8 text-muted-foreground" />
+                                                        <div className="text-xs text-muted-foreground">
+                                                            Drop your image here, or <span className="text-primary">browse</span>
+                                                        </div>
+                                                    </div>
+                                                </label>
                                             </div>
-                                            <div className="text-sm font-medium">Drop your image here, or</div>
-                                            <div className="text-sm text-primary">Click to browse</div>
-                                        </div>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Image formats: .jpg, .jpeg, .png, preferred size: 1:1, file size is restricted to a maximum of
-                                        500kb.
-                                    </p>
+                                        </ScrollArea>
+                                        <p className="text-xs text-muted-foreground">
+                                            Image formats: .jpg, .jpeg, .png, preferred size: 1:1, file size is restricted to a maximum of
+                                            500kb.
+                                        </p></div>
+
                                 </CardContent>
                             </Card>
 
