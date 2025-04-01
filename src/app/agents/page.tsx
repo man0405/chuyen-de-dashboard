@@ -162,7 +162,7 @@ export default function CustomersTable() {
 	};
 
 	return (
-		<div className="w-full max-w-7xl mx-auto p-4 space-y-4 bg-background rounded-lg shadow-sm border">
+		<div className="w-full max-w-7xl mx-auto p-4 space-y-4 bg-background rounded-lg shadow-sm border mt-4">
 			<div className="flex items-center justify-between">
 				<h1 className="text-2xl font-bold">Customers</h1>
 				<div className="flex items-center gap-2">

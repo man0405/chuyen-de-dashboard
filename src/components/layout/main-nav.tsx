@@ -26,39 +26,24 @@ const components: { title: string; href: string; description: string }[] = [
 	},
 ];
 
-const projects: { title: string; href: string; description: string }[] = [
-	{
-		title: "Scrum Board",
-		href: "/projects/scrum",
-		description: "Manage your Scrum workflow",
-	},
+const products: { title: string; href: string; description: string }[] = [
 	{
 		title: "List",
-		href: "/projects/list",
-		description: "Organize all projects",
+		href: "/products",
+		description: "Organize all products",
 	},
 	{
-		title: "Tasks",
-		href: "/projects/tasks",
+		title: "Create",
+		href: "/products/create",
 		description: "Manage project tasks",
 	},
 ];
 
-const customer: { title: string; href: string; description: string }[] = [
+const agents: { title: string; href: string; description: string }[] = [
 	{
 		title: "List",
-		href: "/customer/list",
+		href: "/agents",
 		description: "List of all customers",
-	},
-	{
-		title: "Create",
-		href: "/customer/create",
-		description: "Add a new customer",
-	},
-	{
-		title: "Edit",
-		href: "/customer/edit",
-		description: "Edit customer info",
 	},
 ];
 
@@ -114,16 +99,16 @@ export function MainNav() {
 					</NavigationMenuContent>
 				</NavigationMenuItem>
 				<NavigationMenuItem>
-					<NavigationMenuTrigger>Projects</NavigationMenuTrigger>
+					<NavigationMenuTrigger>Products</NavigationMenuTrigger>
 					<NavigationMenuContent>
 						<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-							{projects.map((project) => (
+							{products.map((product) => (
 								<ListItem
-									key={project.title}
-									title={project.title}
-									href={project.href}
+									key={product.title}
+									title={product.title}
+									href={product.href}
 								>
-									{project.description}
+									{product.description}
 								</ListItem>
 							))}
 						</ul>
@@ -133,7 +118,7 @@ export function MainNav() {
 					<NavigationMenuTrigger>Customer</NavigationMenuTrigger>
 					<NavigationMenuContent>
 						<ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-							{customer.map((item) => (
+							{agents.map((item) => (
 								<ListItem key={item.title} title={item.title} href={item.href}>
 									{item.description}
 								</ListItem>
