@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
+import { UserService } from "@/utils/services/UserService";
+import bcrypt from "bcryptjs";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -26,7 +28,69 @@ export default function SignInPage() {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    // Check if user is already authenticated
+  }, [email, password, router]);
+  // Validate email and password on input change
   // Email validation function
+
+  async function checkAuth() {
+    // Validate inputs
+    const emailError = validateEmail(email);
+    const passwordError = validatePassword(password);
+
+    if (emailError || passwordError) {
+      setErrors({
+        email: emailError,
+        password: passwordError,
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // This would be replaced with your actual authentication API call
+      const user = await UserService.findPageCustomize({
+        filter: { email: email },
+        limit: 1,
+        offset: 0,
+      });
+
+      if (user.data && user.data.length > 0) {
+        const storedHash = user.data[0].password;
+
+        const isMatch = await bcrypt.compare(password, storedHash);
+        if (isMatch) {
+          toast.success("Sign in successful", {
+            description: "Welcome back! Redirecting to dashboard...",
+          });
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 1000);
+          // Redirect to dashboard or home page
+          // You can use router.push("/dashboard") or any other page
+          // after successful login
+        } else {
+          console.log("Invalid email or password");
+          toast.error("Invalid email or password");
+        }
+      } else {
+        toast.error("Authentication failed", {
+          description: "Invalid email or password. Please try again.",
+        });
+        console.log("User not found");
+      }
+    } catch (error) {
+      toast.error("Sign in failed", {
+        description: "An error occurred during sign in. Please try again.",
+      });
+      console.error("Sign in error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) return "Email is required";
@@ -54,60 +118,9 @@ export default function SignInPage() {
     setErrors((prev) => ({ ...prev, password: "" }));
   };
 
-  // Form submission handler
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validate inputs
-    const emailError = validateEmail(email);
-    const passwordError = validatePassword(password);
-
-    if (emailError || passwordError) {
-      setErrors({
-        email: emailError,
-        password: passwordError,
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-
-    try {
-      // This would be replaced with your actual authentication API call
-      const success = await mockAuthenticationService(email, password);
-
-      if (success) {
-        toast.success("Sign in successful", {
-          description: "Welcome back!",
-        });
-        // Redirect to dashboard or home page after successful login
-        router.push("/dashboard");
-      } else {
-        toast.error("Authentication failed", {
-          description: "Invalid email or password. Please try again.",
-        });
-      }
-    } catch (error) {
-      toast.error("Sign in failed", {
-        description: "An error occurred during sign in. Please try again.",
-      });
-      console.error("Sign in error:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Mock authentication service (replace with your actual auth service)
-  const mockAuthenticationService = async (email: string, password: string) => {
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // For demo purposes: accept any @gmail.com address with password longer than 6 chars
-    return email.endsWith("@gmail.com") && password.length >= 6;
-  };
-
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background">
+      <Toaster richColors />
       <Card className="w-full max-w-md p-6">
         <CardHeader className="space-y-1">
           <div className="flex justify-center mb-4">
@@ -123,7 +136,7 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm">
                 Email
@@ -181,11 +194,10 @@ export default function SignInPage() {
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
             </div>
-
             <Button
-              type="submit"
               className="w-full rounded-full h-12 bg-amber-300 hover:bg-amber-400 text-black mt-4"
               disabled={isSubmitting}
+              onClick={checkAuth}
             >
               {isSubmitting ? (
                 <>
@@ -196,7 +208,7 @@ export default function SignInPage() {
                 "Sign in"
               )}
             </Button>
-          </form>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col">
           <div className="flex items-center gap-4 py-4 w-full">
@@ -261,7 +273,7 @@ export default function SignInPage() {
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
             <Link
-              href="/signup"
+              href="/auth/signup"
               className="text-primary underline underline-offset-4"
             >
               Sign up

@@ -13,7 +13,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background">
-      <Card className="w-full max-w-6xl overflow-hidden rounded-3xl border shadow-lg flex">
+      <div className="w-full max-w-6xl overflow-hidden rounded-3xl border shadow-lg flex">
         {/* Left side - Sign up form */}
         <div className="w-full md:w-2/5 p-8 md:p-12 bg-muted/20">
           <div className="mb-8">
@@ -236,7 +236,7 @@ export default function SignupPage() {
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
