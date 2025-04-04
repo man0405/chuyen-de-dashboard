@@ -1,15 +1,140 @@
 "use client";
 
+import type React from "react";
+
 import { useState } from "react";
 import Link from "next/link";
-import { X, Eye, EyeOff } from "lucide-react";
+import { X, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { UserService } from "@/utils/services/UserService";
 
 export default function SignupPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+  });
+
+  // Error state
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+  });
+
+  // Handle input changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+
+    // Clear error when user types
+    setErrors((prev) => ({
+      ...prev,
+      [id]: "",
+    }));
+  };
+
+  // Validation functions
+  const validatename = (name: string) => {
+    if (!name.trim()) return "Full name is required";
+    if (name.trim().length < 3)
+      return "Full name must be at least 3 characters";
+    return "";
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) return "Email is required";
+    if (!emailRegex.test(email)) return "Please enter a valid email address";
+    return "";
+  };
+
+  const validatePassword = (password: string) => {
+    if (!password) return "Password is required";
+    if (password.length < 6) return "Password must be at least 6 characters";
+    return "";
+  };
+
+  const validatephone = (phone: string) => {
+    const phoneRegex = /^\+?[0-9]{10,15}$/;
+    if (!phone) return "Phone number is required";
+    if (!phoneRegex.test(phone)) return "Please enter a valid phone number";
+    return "";
+  };
+
+  // Form submission handler
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validate all inputs
+    const nameError = validatename(formData.name);
+    const emailError = validateEmail(formData.email);
+    const passwordError = validatePassword(formData.password);
+    const phoneError = validatephone(formData.phone);
+
+    // Update errors state
+    setErrors({
+      name: nameError,
+      email: emailError,
+      password: passwordError,
+      phone: phoneError,
+    });
+
+    // If any errors, stop submission
+    if (nameError || emailError || passwordError || phoneError) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Mock signup service
+      const success = await mockSignupService(formData);
+
+      if (success) {
+        toast.success("Account created successfully", {
+          description: "Welcome to Crextio!",
+        });
+        // Redirect to dashboard or signin page
+        router.push("/dashboard");
+      } else {
+        toast.error("Signup failed", {
+          description: "This email may already be registered.",
+        });
+      }
+    } catch (error) {
+      toast.error("Something went wrong", {
+        description: "Please try again later.",
+      });
+      console.error("Signup error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Mock signup service
+  const mockSignupService = async (data: typeof formData) => {
+    // Simulate API call delay
+    const user = UserService.create(data);
+    console.log("User created:", user);
+    if (!user) return false;
+
+    return true;
+  };
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background">
@@ -32,16 +157,24 @@ export default function SignupPage() {
               </p>
             </div>
 
-            <div className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="fullName" className="text-sm">
+                <label htmlFor="name" className="text-sm">
                   Full name
                 </label>
                 <Input
-                  id="fullName"
+                  id="name"
                   placeholder="John Doe"
-                  className="rounded-full h-12"
+                  className={`rounded-full h-12 ${
+                    errors.name ? "border-red-500" : ""
+                  }`}
+                  value={formData.name}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -51,9 +184,37 @@ export default function SignupPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="john.doe@example.com"
-                  className="rounded-full h-12"
+                  placeholder="john.doe@gmail.com"
+                  className={`rounded-full h-12 ${
+                    errors.email ? "border-red-500" : ""
+                  }`}
+                  value={formData.email}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="phone" className="text-sm">
+                  Phone number
+                </label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+1234567890"
+                  className={`rounded-full h-12 ${
+                    errors.phone ? "border-red-500" : ""
+                  }`}
+                  value={formData.phone}
+                  onChange={handleChange}
+                  disabled={isSubmitting}
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -65,20 +226,40 @@ export default function SignupPage() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••••••••••"
-                    className="rounded-full h-12 pr-10"
+                    className={`rounded-full h-12 pr-10 ${
+                      errors.password ? "border-red-500" : ""
+                    }`}
+                    value={formData.password}
+                    onChange={handleChange}
+                    disabled={isSubmitting}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    disabled={isSubmitting}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                )}
               </div>
 
-              <Button className="w-full rounded-full h-12 bg-amber-300 hover:bg-amber-400 text-black">
-                Submit
+              <Button
+                type="submit"
+                className="w-full rounded-full h-12 bg-amber-300 hover:bg-amber-400 text-black"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  "Create account"
+                )}
               </Button>
 
               <div className="flex items-center gap-4 py-2">
@@ -88,7 +269,12 @@ export default function SignupPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="rounded-full h-12">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-full h-12"
+                  disabled={isSubmitting}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="24"
@@ -103,7 +289,12 @@ export default function SignupPage() {
                   </svg>
                   Apple
                 </Button>
-                <Button variant="outline" className="rounded-full h-12">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="rounded-full h-12"
+                  disabled={isSubmitting}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="24"
@@ -131,7 +322,7 @@ export default function SignupPage() {
                   Google
                 </Button>
               </div>
-            </div>
+            </form>
 
             <div className="text-sm text-center mt-8">
               <div className="flex justify-between items-center">

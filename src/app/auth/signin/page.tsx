@@ -28,12 +28,6 @@ export default function SignInPage() {
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    // Check if user is already authenticated
-  }, [email, password, router]);
-  // Validate email and password on input change
-  // Email validation function
-
   async function checkAuth() {
     // Validate inputs
     const emailError = validateEmail(email);
@@ -68,9 +62,6 @@ export default function SignInPage() {
           setTimeout(() => {
             router.push("/dashboard");
           }, 1000);
-          // Redirect to dashboard or home page
-          // You can use router.push("/dashboard") or any other page
-          // after successful login
         } else {
           console.log("Invalid email or password");
           toast.error("Invalid email or password");
