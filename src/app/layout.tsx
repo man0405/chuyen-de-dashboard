@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: "Homirx",
+	title: "Paranoma - Dashboard",
 	description: "Real Estate Website",
 };
 
@@ -35,8 +35,6 @@ export default function RootLayout({
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Header />
-
 					{children}
 				</ThemeProvider>
 			</body>
